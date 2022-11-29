@@ -4,7 +4,7 @@ services:
     image: 'mongo'
     container_name: 'mongo-docker'
     environment:
-      - MONGO_INITDB_DATABASE= mongodb
+      - MONGO_INITDB_DATABASE = initmongodb
       - MONGO_INITDB_USERNAME = root
       - MONGO_INITDB_PASSWORD = root
     volumes:
