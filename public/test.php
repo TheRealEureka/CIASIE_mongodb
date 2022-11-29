@@ -10,7 +10,10 @@ $i=$db->movies->insertOne( [
     "genre"=>"marvel",
     "directeur"=> ["nom"=>"Phillips", "prenom"=>"Todd"]
 ]);
-**/
+
+$db->movies->deleteMany([]);
+
+ **/
 
 $res = $db->movies->find( [] ) ;
 ;
