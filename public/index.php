@@ -8,15 +8,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Throwable;
 
-require __DIR__ . '/../vendor/autoload.php';
-
-$container = require_once __DIR__ . '/../bootstrap.php';
-
-AppFactory::setContainer($container);
+require '../vendor/autoload.php';
 
 $app = AppFactory::create();
 
-
+$app->get('/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write("Hello world!");
+    return $response;
+});
 
 try {
     $app->run();
