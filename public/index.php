@@ -1,12 +1,18 @@
 <?php
-$manager = new MongoDB\Driver\Manager("mongodb://
-root:root@mongodb:27017");
-try {
-    $manager->executeCommand("initmongodb", new MongoDB\Driver\Command([
-        "ping" => 1
-    ]));
-} catch (\MongoDB\Driver\Exception\Exception $e) {
-    echo $e->getMessage();
-}
-var_dump($manager);
+require_once "../vendor/autoload.php" ;
 
+$c = new \MongoDB\Client("mongodb://mongodb:27017");
+$db = $c->initmongodb;
+
+$i=$db->movies->insertOne( [
+    "titre"=>"joker",
+    "annee"=>2019,
+    "genre"=>"marvel",
+    "directeur"=> ["nom"=>"Phillips", "prenom"=>"Todd"]
+]);
+print $i->getInsertedId();
+
+
+$res = $db->movies->find( [] ) ;
+$res->next();
+print_r($res);
