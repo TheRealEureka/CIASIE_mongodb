@@ -24,8 +24,8 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write($txt);
     return $response;
 });
-$app->get('/front', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(file_get_contents('../src/front/main.html'));
+$app->get('/map', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(\App\view\ViewManager::getView("map.html"));
     return $response;
 });
 
