@@ -7,8 +7,10 @@
   },
   "autoload": {
     "psr-4": {
-      "App\\": "./public",
-      "App\\Api\\": "./public/api"
+      "App\\": "./src",
+      "App\\Api\\": "./src/api",
+      "App\\Utils\\": "./src/utils",
+      "App\\View\\": "./src/view"
     }
   }
 }
