@@ -14,17 +14,82 @@
             margin: 0;
             padding: 0;
         }
-        #map { height: 100vh; }
+        #map {
+            z-index: 1;
+            height: 100vh;
+        }
+        .popup{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        .popup-content{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 75%;
+            height: 50%;
+            z-index: 101;
+            overflow: scroll;
+        }
+        .hidden{
+            display: none;
+        }
     </style>
 </head>
 <body>
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <button id="close">X</button>
+        <h1>Popup</h1>
+        <label for="titre">Titre</label>
+        <input type="text" id="titre">
+        <button id="validate">Validate</button>
+    </div>
+</div>
 <div id="map"></div>
+
 <script>
-    var map = L.map('map').setView([48.6880561, 6.1559293,14], 13);
+    let created_marker = null;
+    let map = L.map('map').setView([48.6880561, 6.1559293], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+    fetch('https://geoservices.grand-nancy.org/arcgis/rest/services/public/VOIRIE_Parking/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=nom%2Cadresse%2Cplaces%2Ccapacite&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=pjson'
+    ).then(response => response.json()).then(data => {
+        data.features.forEach(feature => {
+            let marker = L.marker([feature.geometry.y, feature.geometry.x]).addTo(map);
+            marker.bindPopup(feature.attributes.NOM + '<br>' + feature.attributes.ADRESSE + '<br>' + feature.attributes.PLACES + '/' + feature.attributes.CAPACITE + ' places');
+        });
+    });
+    function onMapClick(e) {
+        showPopup();
+        created_marker = L.marker([ e.latlng.lat, e.latlng.lng], {color:'red'})
+            created_marker.addTo(map);
+    }
+    function showPopup(){
+        document.getElementById('popup').classList.remove('hidden');
+    }
+    function hidePopup(){
+        document.getElementById('popup').classList.add('hidden');
+    }
+    function validate(){
+        created_marker.bindPopup(document.getElementById('titre').value);
+        hidePopup();
+    }
+
+    document.getElementById('close').addEventListener('click', hidePopup);
+    document.getElementById('validate').addEventListener('click', validate);
+    map.on('click', onMapClick);
+
 </script>
 </body>
 </html>
