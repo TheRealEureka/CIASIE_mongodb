@@ -9,20 +9,15 @@
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
           integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
           crossorigin=""></script>
-    <style>
-        body{
-            margin: 0;
-            padding: 0;
-        }
-        #map {
-            z-index: 1;
-            height: 100vh;
-        }
-
-    </style>
+    <link rel="stylesheet" href="./data/css/map.css">
 </head>
 <body>
+<div class="panel panel-right">
+    <h1>Points</h1>
+    <ul id="points">
 
+    </ul>
+</div>
 <div id="map"></div>
 
 <script src="./data/js/map.js"></script>
