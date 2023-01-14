@@ -17,6 +17,7 @@ body {
 }
 
 .panel-right {
+  display: none;
   bottom: 0;
   right: 0;
   border-top-left-radius: 10px;
@@ -27,6 +28,11 @@ body {
   height: 100px;
   display: block;
   overflow: scroll;
+}
+
+.leaflet-top.leaflet-left {
+  top: calc(100vh - 100px);
+  left: calc(100vw - 100px);
 }
 
 /*# sourceMappingURL=map.css.map */
