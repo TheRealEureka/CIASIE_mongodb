@@ -12,15 +12,37 @@
     <link rel="stylesheet" href="./data/css/map.css">
 </head>
 <body>
-<div class="panel panel-right">
-    <h1>Points</h1>
-    <ul id="points">
-
-    </ul>
+<div id="menu">
+    <img alt="" jstcache="26" src="//www.gstatic.com/images/icons/material/system_gm/1x/menu_black_24dp.png" class="bDDiq">
 </div>
+<div id="panel" class="hidden">
+</div>
+
+<div id="panel-content">
+    <div id="panel-content-header">
+        <div id="panel-content-header-title">
+            <h1>Map</h1>
+        </div>
+        <div id="panel-content-header-close">
+            <span id="close">X</span>
+        </div>
+    </div>
+    <div id="panel-content-body">
+        <div class="onglets">
+            <div id="1" class="onglet">
+                Parkings
+            </div>
+        </div>
+    </div>
+        <h1>Points</h1>
+        <ul id="points">
+
+        </ul>
+    </div>
 <div id="map"></div>
 
 <script src="./data/js/map.js"></script>
+<script src="./data/js/popup.js"></script>
 
 </body>
 </html>
