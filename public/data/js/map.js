@@ -27,6 +27,15 @@ const markerred= L.icon({
     shadowSize: [25, 40],
     shadowAnchor: [17, 40],
 });
+const markerround= L.icon({
+    iconUrl: './data/icons/marker-round.png',
+    iconSize: [10, 10],
+    iconAnchor: [5, 5],
+    popupAnchor: [-12, -40],
+    shadowUrl: '',
+    shadowSize: [25, 40],
+    shadowAnchor: [17, 40],
+});
 //console.log(L.Icon.Default);
 
 let parkings = L.layerGroup([]);
@@ -76,14 +85,15 @@ fetch('https://api.jcdecaux.com/vls/v1/stations?contract=nancy&apiKey=b1977e9d41
 fetch('https://transport-data-gouv-fr-resource-history-prod.cellar-c2.services.clever-cloud.com/conversions/gtfs-to-geojson/55795/55795.20221220.180715.388446.zip.geojson'
 ).then(response => response.json()).then(data => {
 data.features.forEach(point => {
-    console.log(point);
-      let marker =  L.geoJSON(point, {
-            style: function (feature) {
-                if(feature.geometry.type == "LineString"){
-                return {color: feature.properties.route_color};
-                  }
-            }
-        });
+    let opt = {
+        style: function (feature) {
+            return {color: feature.properties.route_color}
+        }
+    }
+    if(point.geometry.type !== "LineString"){
+        opt = {icon : markerround};
+    }
+      let marker =  L.geoJSON(point, opt);
       marker.bindPopup("Ligne "+point.properties.route_short_name + '</br></br>'+point.properties.route_long_name);
       transport.addLayer(marker);
 
@@ -112,5 +122,5 @@ let overlayMaps = {
 
 L.control.layers({}, overlayMaps).addTo(map);
 
-//map.on('click', onMapClick);
+map.on('click', onMapClick);
 
