@@ -31,7 +31,7 @@ const markerround= L.icon({
     iconUrl: './data/icons/marker-round.png',
     iconSize: [10, 10],
     iconAnchor: [5, 5],
-    popupAnchor: [-12, -40],
+    popupAnchor: [0, -7],
     shadowUrl: '',
     shadowSize: [25, 40],
     shadowAnchor: [17, 40],
@@ -49,7 +49,7 @@ let baselayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 let map = L.map('map',{
-    layers: [baselayer, parkings, myPoints]
+    layers: [baselayer, parkings, myPoints, transport]
 }).setView([48.6880561, 6.1559293], 13);
 
 fetch('https://geoservices.grand-nancy.org/arcgis/rest/services/public/VOIRIE_Parking/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=nom%2Cadresse%2Cplaces%2Ccapacite&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=pjson'
@@ -85,16 +85,23 @@ fetch('https://api.jcdecaux.com/vls/v1/stations?contract=nancy&apiKey=b1977e9d41
 fetch('https://transport-data-gouv-fr-resource-history-prod.cellar-c2.services.clever-cloud.com/conversions/gtfs-to-geojson/55795/55795.20221220.180715.388446.zip.geojson'
 ).then(response => response.json()).then(data => {
 data.features.forEach(point => {
+    console.log(point);
     let opt = {
         style: function (feature) {
             return {color: feature.properties.route_color}
         }
     }
+    let txt = "Ligne "+point.properties.route_short_name + '</br></br>'+point.properties.route_long_name;
     if(point.geometry.type !== "LineString"){
-        opt = {icon : markerround};
+        opt = {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {icon: markerround});
+            }
+        }
+        txt = "Arrêt "+point.properties.name + '</br></br> Code de l\'arrêt : '+point.properties.code;
     }
       let marker =  L.geoJSON(point, opt);
-      marker.bindPopup("Ligne "+point.properties.route_short_name + '</br></br>'+point.properties.route_long_name);
+      marker.bindPopup(txt);
       transport.addLayer(marker);
 
 })
@@ -122,5 +129,5 @@ let overlayMaps = {
 
 L.control.layers({}, overlayMaps).addTo(map);
 
-map.on('click', onMapClick);
+//map.on('click', onMapClick);
 
