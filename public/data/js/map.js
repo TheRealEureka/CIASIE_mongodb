@@ -1,4 +1,8 @@
 let points = [];
+
+//Transferer les api call en php -> mongoDB
+//Ajouter les points sur la map via l'api
+
 const markergreen = L.icon({
     iconUrl: './data/icons/marker-green.png',
     iconSize: [25, 40],
