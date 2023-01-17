@@ -56,9 +56,9 @@ let map = L.map('map',{
     layers: [baselayer, parkings, myPoints, transport]
 }).setView([48.6880561, 6.1559293], 13);
 
-fetch('http://localhost:8080'
+fetch('http://localhost:8080/api/getData'
 ).then(response => response.json()).then(data => {
-    data.features.forEach(point => {
+    data.forEach(point => {
         let opt = {}
         if(point.properties['opts']['icon'] === 'markergreen'){
             opt.pointToLayer= function (feature, latlng) {

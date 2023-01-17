@@ -18,14 +18,23 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write(json_encode(\App\Utils\Fetcher::fetchAll()));
     return $response;
 });
-$app->get('/test', function (Request $request, Response $response, $args) {
+$app->get('/initdata', function (Request $request, Response $response, $args) {
     $db = MongoConnector::makeConnection();
-    $res = $db->movies->find( [] );
-    $txt = "";
-    foreach ($res->toArray() as $movie) {
-        $txt .= $movie["titre"];
+    $res = "Collection already exists";
+    if(!MongoConnector::isCollectionExist('sites')){
+        $db->createCollection('sites');
+        $col = $db->selectCollection('sites');
+        $col->insertMany(\App\Utils\Fetcher::fetchAll()['features']);
+        $res = "Collection created, data inserted";
     }
-    $response->getBody()->write($txt);
+    $response->getBody()->write($res);
+    return $response;
+});
+$app->get('/api/getData', function (Request $request, Response $response, $args) {
+    $db = MongoConnector::makeConnection();
+    $res = $db->sites->find( [] );
+
+    $response->getBody()->write(json_encode($res->toArray(),true));
     return $response;
 });
 

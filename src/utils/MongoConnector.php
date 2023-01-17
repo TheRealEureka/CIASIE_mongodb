@@ -41,5 +41,14 @@ class MongoConnector
         return self::$db;
     }
 
+    public static function isCollectionExist(string $name): bool
+    {
+        if(!isset(self::$db)){
+            return false;
+        }
+        return in_array($name, iterator_to_array(self::$db->listCollectionNames()));
+    }
+
+
 
 }

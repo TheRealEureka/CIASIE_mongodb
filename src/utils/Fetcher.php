@@ -9,13 +9,15 @@ class Fetcher
     private const URL_PARKINGS ="https://geoservices.grand-nancy.org/arcgis/rest/services/public/VOIRIE_Parking/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=nom%2Cadresse%2Cplaces%2Ccapacite&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=pjson";
     private const URL_VELOS ="https://api.jcdecaux.com/vls/v1/stations?contract=nancy&apiKey=b1977e9d41e23998327aaf468d3d0691196cc814";
     private const URL_TRANSPORTS ="https://transport-data-gouv-fr-resource-history-prod.cellar-c2.services.clever-cloud.com/conversions/gtfs-to-geojson/55795/55795.20221220.180715.388446.zip.geojson";
-  public static function fetchAll(){
+  public static function fetchAll(): array
+  {
     $parkings = self::fetchParkings();
     $velos = self::fetchVelos();
     $transports = self::fetchTransports();
     return array("type"=> "FeatureCollection", "features" => array_merge($parkings, $velos, $transports));
   }
-  private static function fetchParkings(){
+  private static function fetchParkings(): array
+  {
       try{
           $data = json_decode(file_get_contents(self::URL_PARKINGS));
           $data = $data->features;
@@ -46,7 +48,8 @@ class Fetcher
           return [];
       }
   }
-    private static function fetchVelos(){
+    private static function fetchVelos(): array
+    {
         try {
             $data = json_decode(file_get_contents(self::URL_VELOS));
             $velos = [];
@@ -76,7 +79,8 @@ class Fetcher
         }
 
     }
-    private static function fetchTransports(){
+    private static function fetchTransports(): array
+    {
         try{
             $data = json_decode(file_get_contents(self::URL_TRANSPORTS));
             $data = $data->features;
