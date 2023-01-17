@@ -56,70 +56,64 @@ let map = L.map('map',{
     layers: [baselayer, parkings, myPoints, transport]
 }).setView([48.6880561, 6.1559293], 13);
 
-fetch('https://geoservices.grand-nancy.org/arcgis/rest/services/public/VOIRIE_Parking/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=nom%2Cadresse%2Cplaces%2Ccapacite&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=pjson'
+fetch('http://localhost:8080'
 ).then(response => response.json()).then(data => {
     data.features.forEach(point => {
-        let marker = L.marker([point.geometry.y, point.geometry.x]);
-        points.push(marker);
-        let txt = point.attributes.NOM + '<br>' + point.attributes.ADRESSE;
-        if(point.attributes.PLACES && point.attributes.CAPACITE){
-            txt += '<br><br>' + point.attributes.PLACES + '/' + point.attributes.CAPACITE + ' places';
-        }
-        marker.bindPopup(txt);
-        parkings.addLayer(marker);
-    });
+        let opt = {}
+        if(point.properties['opts']['icon'] === 'markergreen'){
+            opt.pointToLayer= function (feature, latlng) {
+                    return L.marker(latlng, {icon: markergreen});
+            }
+        }else if(point.properties['opts']['icon'] === 'markerred'){
+            opt.pointToLayer= function (feature, latlng) {
+                    return L.marker(latlng, {icon: markerred});
+                }
 
-});
-fetch('https://api.jcdecaux.com/vls/v1/stations?contract=nancy&apiKey=b1977e9d41e23998327aaf468d3d0691196cc814'
-).then(response => response.json()).then(data => {
-    data.forEach(point => {
-
-        let marker = L.marker([point.position.lat, point.position.lng], {icon : markergreen});
-        points.push(marker);
-        let status = "ouverte";
-        if(point.status !== 'OPEN'){
-            status = "fermée";
+        } else if(point.properties['opts']['icon'] === 'markerround'){
+            opt.pointToLayer= function (feature, latlng) {
+                    return L.marker(latlng, {icon: markerround});
+                }
+        } else if(point.properties['opts']['icon'] === 'markerpurple'){
+            opt.pointToLayer= function (feature, latlng) {
+                    return L.marker(latlng, {icon: markerpurple});
+                }
         }
-        let txt = point.name + '<br>' + point.address + '<br><br> La station est actuellement '+status + '</br>' +point.available_bike_stands +'/'+ point.bike_stands + ' emplacements disponibles <br>' + point.available_bikes + ' vélos disponibles';
-        marker.bindPopup(txt);
-        velos.addLayer(marker);
-    });
-
-});
-fetch('https://transport-data-gouv-fr-resource-history-prod.cellar-c2.services.clever-cloud.com/conversions/gtfs-to-geojson/55795/55795.20221220.180715.388446.zip.geojson'
-).then(response => response.json()).then(data => {
-data.features.forEach(point => {
-    let opt = {
-        style: function (feature) {
-            return {color: feature.properties.route_color}
-        }
-    }
-    let txt = "Ligne "+point.properties.route_short_name + '</br></br>'+point.properties.route_long_name;
-    if(point.geometry.type !== "LineString"){
-        opt = {
-            pointToLayer: function (feature, latlng) {
-                return L.marker(latlng, {icon: markerround});
+        if(point.properties['opts']['color']){
+            opt.style = function (feature) {
+                return {color: feature.properties['opts']['color']}
             }
         }
-        txt = "Arrêt "+point.properties.name + '</br></br> Code de l\'arrêt : '+point.properties.code;
-    }
-      let marker =  L.geoJSON(point, opt);
-      marker.bindPopup(txt);
-      transport.addLayer(marker);
-      points.push(marker);
-})
+        let marker =  L.geoJSON(point, opt);
+        marker.bindPopup(point.properties['label']);
+
+        switch (point.properties['category']) {
+            case 'parking':
+                parkings.addLayer(marker);
+                break;
+            case 'velo':
+                velos.addLayer(marker);
+                break;
+            case 'transport':
+                transport.addLayer(marker);
+                break;
+            case 'myPoints':
+                myPoints.addLayer(marker);
+                break;
+            default:
+                marker.addTo(map);
+
+        }
+    });
 });
 function onMapClick(e) {
-    // let marker =L.marker([ e.latlng.lat, e.latlng.lng], {icon : markerpurple});
-    // myPoints.addLayer(marker);
-    // let label = prompt("Label");
-    // if(label){
-    //  marker.bindPopup(label);
-    // }
-    // points.push(marker);
-    points.forEach(point => {
-        console.log(point.toGeoJSON());
-    });
+     let marker =L.marker([ e.latlng.lat, e.latlng.lng], {icon : markerpurple});
+     myPoints.addLayer(marker);
+    let label = prompt("Label");
+     if(label){
+      marker.bindPopup(label);
+    }
+    points.push(marker);
+
 }
 
 

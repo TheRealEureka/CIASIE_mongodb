@@ -3,7 +3,8 @@
     "mongodb/mongodb": "^1.15.0",
     "ext-mongodb" :  "^1.10.0",
     "slim/slim": "4.*",
-    "slim/psr7": "^1.5"
+    "slim/psr7": "^1.5",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

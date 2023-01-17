@@ -15,6 +15,10 @@ $app = AppFactory::create();
 MongoConnector::setConfig('../src/conf/dbconf.ini');
 
 $app->get('/', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(json_encode(\App\Utils\Fetcher::fetchAll()));
+    return $response;
+});
+$app->get('/test', function (Request $request, Response $response, $args) {
     $db = MongoConnector::makeConnection();
     $res = $db->movies->find( [] );
     $txt = "";
@@ -24,6 +28,7 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write($txt);
     return $response;
 });
+
 $app->get('/map', function (Request $request, Response $response, $args) {
     $response->getBody()->write(\App\view\ViewManager::getView("map.html"));
     return $response;
