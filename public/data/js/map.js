@@ -85,7 +85,6 @@ fetch('https://api.jcdecaux.com/vls/v1/stations?contract=nancy&apiKey=b1977e9d41
 fetch('https://transport-data-gouv-fr-resource-history-prod.cellar-c2.services.clever-cloud.com/conversions/gtfs-to-geojson/55795/55795.20221220.180715.388446.zip.geojson'
 ).then(response => response.json()).then(data => {
 data.features.forEach(point => {
-    console.log(point);
     let opt = {
         style: function (feature) {
             return {color: feature.properties.route_color}
@@ -103,18 +102,20 @@ data.features.forEach(point => {
       let marker =  L.geoJSON(point, opt);
       marker.bindPopup(txt);
       transport.addLayer(marker);
-
+      points.push(marker);
 })
 });
 function onMapClick(e) {
-    let marker =L.marker([ e.latlng.lat, e.latlng.lng], {icon : markerpurple});
-    myPoints.addLayer(marker);
-    let label = prompt("Label");
-    if(label){
-     marker.bindPopup(label);
-
-    }
-    points.push(marker);
+    // let marker =L.marker([ e.latlng.lat, e.latlng.lng], {icon : markerpurple});
+    // myPoints.addLayer(marker);
+    // let label = prompt("Label");
+    // if(label){
+    //  marker.bindPopup(label);
+    // }
+    // points.push(marker);
+    points.forEach(point => {
+        console.log(point.toGeoJSON());
+    });
 }
 
 
@@ -129,5 +130,6 @@ let overlayMaps = {
 
 L.control.layers({}, overlayMaps).addTo(map);
 
-//map.on('click', onMapClick);
+
+map.on('click', onMapClick);
 
