@@ -15,7 +15,7 @@ $app = AppFactory::create();
 MongoConnector::setConfig('../src/conf/dbconf.ini');
 
 $app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(\App\Utils\Fetcher::fetchAll()));
+    $response->getBody()->write(\App\view\ViewManager::getView("index.html"));
     return $response;
 });
 $app->get('/initdata', function (Request $request, Response $response, $args) {
