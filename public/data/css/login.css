@@ -1,0 +1,30 @@
+
+
+body {
+  background: url("https://media.tenor.com/BUaTzyS0-l0AAAAC/coldplay-dancing.gif") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+}
+
+#form {
+  margin: 0 auto;
+
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+}
+#form #err {
+  width: 95%;
+  text-align: justify;
+  color: red;
+}
+
+
+/*# sourceMappingURL=login.css.map */

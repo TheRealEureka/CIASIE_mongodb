@@ -22,16 +22,16 @@ class Raccoon
 
     public static function loginUser($data, &$message) : bool{
         if(!isset($data['username']) || !isset($data['password'])){
-            $message = "Invalid data";
+            $message = "Des données sont manquantes";
             return false;
         }
         $user = self::getUser($data['username']);
         if(!$user){
-            $message = "User not found";
+            $message = "Nom d'utilisateur ou mot de passe incorrect";
             return false;
         }
         if(!password_verify($data['password'], $user['password'])){
-            $message = "Invalid password";
+            $message = "Nom d'utilisateur ou mot de passe incorrect";
             return false;
         }
         return true;
@@ -39,14 +39,14 @@ class Raccoon
     public static function addPoint($data, &$message) : bool{
         $db = MongoConnector::makeConnection();
         if(!isset($data['username']) || !isset($data['point'])){
-            $message = "Invalid data";
+            $message = "Des données sont manquantes";
             return false;
         }
         $point = $data['point'];
         try{
             $point = json_decode($point, true);
         } catch(\Exception $e){
-            $message = "Invalid data";
+            $message = "Des données sont manquantes";
             return false;
         }
         $col = $db->selectCollection('users');
@@ -63,14 +63,14 @@ class Raccoon
     public static function removePoint($data, &$message) : bool{
         $db = MongoConnector::makeConnection();
         if(!isset($data['username']) || !isset($data['point'])){
-            $message = "Invalid data";
+            $message = "Des données sont manquantes";
             return false;
         }
         $point = $data['point'];
         try{
             $point = json_decode($point, true);
         } catch(\Exception $e){
-            $message = "Invalid data";
+            $message = "Des données sont manquantes";
             return false;
         }
         $col = $db->selectCollection('users');
@@ -85,25 +85,25 @@ class Raccoon
      * @throws \Exception
      */
     private static function checkUser($data, &$message) : bool{
-        if(!isset($data['username']) || !isset($data['password']) || !isset($data['password_verify']) || isset($data['email'])){
-            $message = "Invalid data";
+        if(!isset($data['username']) || !isset($data['password']) || !isset($data['password_verify']) || !isset($data['email'])){
+            $message = "Des données sont manquantes";
             return false;
         }
         if(strlen($data['username']) < 3 || strlen($data['password']) < 3){
-            $message = "Username or password too short";
+            $message = "Nom d'utilisateur ou mot de passe trop court";
             return false;
         }
         if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
         {
-            $message = "Invalid email";
+            $message = "Email invalide";
             return false;
         }
         if($data['password'] != $data['password_verify']){
-            $message = "Passwords do not match";
+            $message = "Les mots de passe ne correspondent pas";
             return false;
         }
         if(self::getUser($data['username'])){
-            $message = "User already exists";
+            $message = "Le nom d'utilisateur est déjà utilisé";
             return false;
         }
         return true;

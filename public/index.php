@@ -17,7 +17,13 @@ $app = AppFactory::create();
 MongoConnector::setConfig('../src/conf/dbconf.ini');
 
 $app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(\App\view\ViewManager::getView("index.html"));
+    $view = \App\view\ViewManager::getView("index.html");
+    $msg = "";
+    if(isset($_SESSION['username'])){
+        $msg = "Bonjour ".$_SESSION['username']." !";
+    }
+    $view = str_replace("{{UserMessage}}", $msg, $view);
+    $response->getBody()->write($view);
     return $response;
 });
 
@@ -35,20 +41,46 @@ $app->get('/map', function (Request $request, Response $response, $args) {
     return $response;
 });
 $app->get('/login', function (Request $request, Response $response, $args) {
-
-    $response->getBody()->write(\App\view\ViewManager::getView("login.php"));
+     $view = \App\view\ViewManager::getView("login.html");
+     $msg = "";
+    if(isset($_SESSION['username'])){
+        session_destroy();
+        $msg = "<span style='color:green'>Vous avez bien été déconnecté.</span>";
+    }
+     $view = str_replace("{{ERROR}}", $msg, $view);
+    $response->getBody()->write($view);
     return $response;
 });
 $app->post('/login', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(\App\view\ViewManager::getView("login.php"));
+    $msg = "";
+    $login = Raccoon::loginUser($_POST, $msg);
+    if($login){
+        $_SESSION['username'] = $_POST['username'];
+        return $response->withStatus(302)->withHeader('Location', '/');
+    }
+    $view = \App\view\ViewManager::getView("login.html");
+    $view = str_replace("{{ERROR}}", $msg, $view);
+    $response->getBody()->write($view);
     return $response;
 });
+
 $app->get('/register', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(\App\view\ViewManager::getView("register.php"));
+    $view = \App\view\ViewManager::getView("register.html");
+    $view = str_replace("{{ERROR}}", "", $view);
+    $response->getBody()->write($view);
+
     return $response;
 });
 $app->post('/register', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(\App\view\ViewManager::getView("register.php"));
+    $msg = "";
+    $register = Raccoon::registerUser($_POST, $msg);
+    if($register){
+        $msg = "<span style='color:green'>Vous avez bien été inscrit. Veuillez vous connecter.</span>";
+    }
+
+    $view = \App\view\ViewManager::getView("register.html");
+   $view = str_replace("{{ERROR}}", $msg, $view);
+    $response->getBody()->write($view);
     return $response;
 });
 $app->post('/addPoint', function (Request $request, Response $response, $args) {
