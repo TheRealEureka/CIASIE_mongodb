@@ -17,13 +17,15 @@ $app = AppFactory::create();
 MongoConnector::setConfig('../src/conf/dbconf.ini');
 
 $app->get('/', function (Request $request, Response $response, $args) {
-    $view = \App\view\ViewManager::getView("index.html");
     $msg = "";
+    $conWord = "Connexion";
+    $disp = "";
     if(isset($_SESSION['username'])){
         $msg = "Bonjour ".$_SESSION['username']." !";
+        $conWord = "Déconnexion";
+        $disp = "style='display:none'";
     }
-    $view = str_replace("{{UserMessage}}", $msg, $view);
-    $response->getBody()->write($view);
+    $response->getBody()->write( \App\view\ViewManager::getView("index.html", array("UserMessage" => $msg, "loginWord" => $conWord, "disp"=>$disp)));
     return $response;
 });
 
@@ -45,18 +47,21 @@ $app->get('/api/getdata', function (Request $request, Response $response, $args)
 });
 
 $app->get('/map', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(\App\view\ViewManager::getView("map.html"));
+    $msg = "Vous n'êtes pas connecté, les points que vous ajouterez ne seront pas sauvegardés.";
+    if(isset($_SESSION['username'])){
+        $msg = "Bonjour ".$_SESSION['username']." ! ";
+    }
+    $response->getBody()->write(\App\view\ViewManager::getView("map.html", array("UserMessage" => $msg)));
     return $response;
 });
 $app->get('/login', function (Request $request, Response $response, $args) {
-     $view = \App\view\ViewManager::getView("login.html");
-     $msg = "";
-    if(isset($_SESSION['username'])){
+    $msg = "";
+    if (isset($_SESSION['username'])) {
         session_destroy();
         $msg = "<span style='color:green'>Vous avez bien été déconnecté.</span>";
     }
-     $view = str_replace("{{ERROR}}", $msg, $view);
-    $response->getBody()->write($view);
+    $response->getBody()->write(\App\view\ViewManager::getView("login.html", array("ERROR" => $msg)));
+
     return $response;
 });
 $app->post('/login', function (Request $request, Response $response, $args) {
@@ -66,17 +71,12 @@ $app->post('/login', function (Request $request, Response $response, $args) {
         $_SESSION['username'] = $_POST['username'];
         return $response->withStatus(302)->withHeader('Location', '/');
     }
-    $view = \App\view\ViewManager::getView("login.html");
-    $view = str_replace("{{ERROR}}", $msg, $view);
-    $response->getBody()->write($view);
+    $response->getBody()->write(\App\view\ViewManager::getView("login.html", array("ERROR" => $msg)));
     return $response;
 });
 
 $app->get('/register', function (Request $request, Response $response, $args) {
-    $view = \App\view\ViewManager::getView("register.html");
-    $view = str_replace("{{ERROR}}", "", $view);
-    $response->getBody()->write($view);
-
+    $response->getBody()->write(\App\view\ViewManager::getView("register.html"));
     return $response;
 });
 $app->post('/register', function (Request $request, Response $response, $args) {
@@ -85,10 +85,7 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     if($register){
         $msg = "<span style='color:green'>Vous avez bien été inscrit. Veuillez vous connecter.</span>";
     }
-
-    $view = \App\view\ViewManager::getView("register.html");
-   $view = str_replace("{{ERROR}}", $msg, $view);
-    $response->getBody()->write($view);
+    $response->getBody()->write(\App\view\ViewManager::getView("register.html", array("ERROR" => $msg)));
     return $response;
 });
 $app->post('/addPoint', function (Request $request, Response $response, $args) {

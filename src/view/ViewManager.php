@@ -14,10 +14,14 @@ class ViewManager
      * @param string $name
      * @return string $html
      */
-    public static function getView($name): string
+    public static function getView($name, array $attributs = array()): string
     {
         if(file_exists(self::$path.$name)){
-            return file_get_contents(self::$path.$name);
+            $view = file_get_contents(self::$path.$name);
+            foreach ($attributs as $key => $value){
+                $view = str_replace("{{".$key."}}", $value, $view);
+            }
+            return preg_replace("/{{.*}}/", "", $view);
         }
         throw new \Exception("View not found");
     }

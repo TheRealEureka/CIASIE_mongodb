@@ -209,8 +209,7 @@ fetch(url, {
     body: JSON.stringify({'point' : point})
 })
     .then(response => response.text())
-    .then(data => {
-        console.log("success"+data);
+    .then(() => {
     })
     .catch((error) => {
         console.error(error);

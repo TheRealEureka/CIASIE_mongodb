@@ -59,12 +59,15 @@ div#panel-content.open {
   padding: 0;
   border: 2px solid grey;
 }
-.new-point{
+.new-point {
   display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
   margin: 10px;
+}
+.new-point a, .new-point button {
+  margin: 5px;
 }
 #menu > i {
   position: absolute;
