@@ -102,3 +102,10 @@ div#panel-content.open {
 button.accordion-button{
 border-radius: 0;
 }
+.list-group-item{
+  padding: 3px;
+  cursor: pointer;
+}
+.list-group-item:hover{
+  background-color: #f8f9fa;
+}

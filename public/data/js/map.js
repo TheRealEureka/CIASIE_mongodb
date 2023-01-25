@@ -55,7 +55,7 @@ let baselayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 let map = L.map('map',{
-    layers: [baselayer, parkings, myPoints, transport]
+    layers: [baselayer, myPoints]
 }).setView([48.6880561, 6.1559293], 13);
 
 fetch('http://localhost:8080/api/getData'
@@ -120,6 +120,8 @@ function onMapClick(e) {
         }
         points.push(marker);
         addMode = false;
+        mapObject.classList.remove('cible');
+
     }
 }
 
@@ -147,6 +149,7 @@ function displayPointsList(){
 function pointsToHTML(points){
 
     let ul = document.createElement('ul');
+    ul.classList.add('list-group');
     ul.append(...points.map(pointToHTML))
     return ul;
 }

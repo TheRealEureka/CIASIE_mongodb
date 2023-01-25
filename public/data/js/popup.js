@@ -19,7 +19,6 @@ function togglePanel(){
 
   }
 }
-togglePanel();
 menu.addEventListener('click', togglePanel);
 close.addEventListener('click', togglePanel);
 panel.addEventListener('click', togglePanel);

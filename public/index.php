@@ -27,6 +27,10 @@ $app->get('/initdata', function (Request $request, Response $response, $args) {
         $col->insertMany(\App\Utils\Fetcher::fetchAll()['features']);
         $res = "Collection created, data inserted";
     }
+    if(!MongoConnector::isCollectionExist('users')){
+        $db->createCollection('users');
+        $res = "Collection created, data inserted";
+    }
     $response->getBody()->write($res);
     return $response;
 });
@@ -37,10 +41,10 @@ $app->get('/deldata', function (Request $request, Response $response, $args) {
         $db->dropCollection('sites');
         $res = "Collection deleted";
     }
-    if(!MongoConnector::isCollectionExist('users')){
-        $db->createCollection('users');
-        $res = "Collection created, data inserted";
+    if(MongoConnector::isCollectionExist('users')){
+        $db->dropCollection('users');
     }
+
     $response->getBody()->write($res);
     return $response;
 });
@@ -58,6 +62,7 @@ $app->get('/map', function (Request $request, Response $response, $args) {
     return $response;
 });
 $app->get('/login', function (Request $request, Response $response, $args) {
+
     $response->getBody()->write(\App\view\ViewManager::getView("login.php"));
     return $response;
 });
