@@ -55,7 +55,7 @@ let baselayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 let map = L.map('map',{
-    layers: [baselayer, myPoints]
+    layers: [baselayer, myPoints, parkings, velos, transport],
 }).setView([48.6880561, 6.1559293], 13);
 
 fetch('/api/getdata'

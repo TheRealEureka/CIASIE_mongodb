@@ -28,5 +28,4 @@ http://localhost:8080/
 ### 5. Enjoy ! 🎉
 
 ## Note 
-* By default on the map, all points are hidden. To see them, the layer menu is on the top right.
 * Your markers are not saved if you're not logged in.
