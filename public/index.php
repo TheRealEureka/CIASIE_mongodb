@@ -37,6 +37,10 @@ $app->get('/deldata', function (Request $request, Response $response, $args) {
         $db->dropCollection('sites');
         $res = "Collection deleted";
     }
+    if(!MongoConnector::isCollectionExist('users')){
+        $db->createCollection('users');
+        $res = "Collection created, data inserted";
+    }
     $response->getBody()->write($res);
     return $response;
 });
