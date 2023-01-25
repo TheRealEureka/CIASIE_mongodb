@@ -56,6 +56,10 @@ class Raccoon
         );
         return true;
     }
+
+    /**
+     * @throws \Exception
+     */
     public static function removePoint($data, &$message) : bool{
         $db = MongoConnector::makeConnection();
         if(!isset($data['username']) || !isset($data['point'])){
@@ -112,5 +116,15 @@ class Raccoon
         $db = MongoConnector::makeConnection();
         $col = $db->selectCollection('users');
         return $col->findOne(['username' => $name]);
+    }
+
+    public static function getPost(){
+        try{
+            $post = file_get_contents('php://input');
+            $post = json_decode($post, true);
+        } catch(\Exception $e){
+            return array("error" => $e->getMessage());
+        }
+        return $post;
     }
 }

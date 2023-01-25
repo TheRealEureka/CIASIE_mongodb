@@ -105,6 +105,11 @@ border-radius: 0;
 .list-group-item{
   padding: 3px;
   cursor: pointer;
+  border: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
 }
 .list-group-item:hover{
   background-color: #f8f9fa;

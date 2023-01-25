@@ -1,9 +1,11 @@
 <?php
 namespace App;
+header("Access-Control-Allow-Headers: Content-Type");
 
 session_start();
 
 use App\Utils\MongoConnector;
+use App\Utils\Raccoon;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -47,6 +49,14 @@ $app->get('/register', function (Request $request, Response $response, $args) {
 });
 $app->post('/register', function (Request $request, Response $response, $args) {
     $response->getBody()->write(\App\view\ViewManager::getView("register.php"));
+    return $response;
+});
+$app->post('/addPoint', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(json_encode(Raccoon::getPost(),true));
+    return $response;
+});
+$app->post('/removePoint', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(json_encode(Raccoon::getPost(),true));
     return $response;
 });
 

@@ -118,13 +118,37 @@ function onMapClick(e) {
         if (label) {
             marker.bindPopup(label);
         }
-        points.push(marker);
+        else{
+            label = "Sans nom";
+        }
         addMode = false;
         mapObject.classList.remove('cible');
+        let point = {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [e.latlng.lng, e.latlng.lat]
+            }
+            ,
+            "properties": {
+                "name": label,
+                "label": label,
+                "category": "myPoints",
+                "opts": {
+                    "icon": "markerpurple"
+                }
+            }
+        }
+        addPoint(point);
+        callPoint(point);
+        points.push(point);
+
 
     }
 }
-
+function addPoint(point){
+    document.getElementById('myPointsList').append(pointToHTML(point, true));
+}
 function displayPointsList(){
    let pointsData = {
        velos : points.filter(point => point.properties['category'] === 'velo'),
@@ -141,27 +165,56 @@ function displayPointsList(){
     transportList.innerHTML = '';
     myPointsList.innerHTML = '';
 
-    veloList.append(pointsToHTML(pointsData.velos));
-    parkingList.append(pointsToHTML(pointsData.parkings));
-    transportList.append(pointsToHTML(pointsData.transports));
-    myPointsList.append(pointsToHTML(pointsData.myPoints))
+    veloList.append(...pointsToHTML(pointsData.velos));
+    parkingList.append(...pointsToHTML(pointsData.parkings));
+    transportList.append(...pointsToHTML(pointsData.transports));
+    myPointsList.append(...pointsToHTML(pointsData.myPoints))
 }
 function pointsToHTML(points){
-
-    let ul = document.createElement('ul');
-    ul.classList.add('list-group');
-    ul.append(...points.map(pointToHTML))
-    return ul;
+    return points.map(pointToHTML);
 }
-function pointToHTML(point){
+function pointToHTML(point, canDelete = false){
    let li = document.createElement('li');
     li.classList.add('list-group-item');
     li.innerHTML = point.properties['name'];
     li.addEventListener('click', () => {
         map.flyTo([point.geometry.coordinates[1], point.geometry.coordinates[0]], 15);
-        console.log(point);
     });
+    if(canDelete){
+        let deleteButton = document.createElement('button');
+        deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
+        deleteButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        deleteButton.addEventListener('click', () => {
+            li.remove();
+            myPoints.removeLayer(myPoints.getLayers().find(layer => layer._popup._content === point.properties['name']));
+            points = points.filter(p => p.properties['name'] !== point.properties['name']);
+            callPoint(point,true);
+        });
+        li.append(deleteButton);
+    }
     return li;
+}
+
+function callPoint(point, remove = false){
+    let url = "/addPoint";
+
+    if(remove){
+        url = "/removePoint";
+    }
+fetch(url, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({'point' : point})
+})
+    .then(response => response.json())
+    .then(data => {
+        console.log("success");
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 
 
