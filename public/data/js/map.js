@@ -58,7 +58,7 @@ let map = L.map('map',{
     layers: [baselayer, myPoints]
 }).setView([48.6880561, 6.1559293], 13);
 
-fetch('http://localhost:8080/api/getData'
+fetch('/api/getdata'
 ).then(response => response.json()).then(data => {
     data.forEach(point => {
         let opt = {}

@@ -18,38 +18,9 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write(\App\view\ViewManager::getView("index.html"));
     return $response;
 });
-$app->get('/initdata', function (Request $request, Response $response, $args) {
-    $db = MongoConnector::makeConnection();
-    $res = "Collection already exists";
-    if(!MongoConnector::isCollectionExist('sites')){
-        $db->createCollection('sites');
-        $col = $db->selectCollection('sites');
-        $col->insertMany(\App\Utils\Fetcher::fetchAll()['features']);
-        $res = "Collection created, data inserted";
-    }
-    if(!MongoConnector::isCollectionExist('users')){
-        $db->createCollection('users');
-        $res = "Collection created, data inserted";
-    }
-    $response->getBody()->write($res);
-    return $response;
-});
-$app->get('/deldata', function (Request $request, Response $response, $args) {
-    $db = MongoConnector::makeConnection();
-    $res = "Collection not exists";
-    if(MongoConnector::isCollectionExist('sites')){
-        $db->dropCollection('sites');
-        $res = "Collection deleted";
-    }
-    if(MongoConnector::isCollectionExist('users')){
-        $db->dropCollection('users');
-    }
 
-    $response->getBody()->write($res);
-    return $response;
-});
 
-$app->get('/api/getData', function (Request $request, Response $response, $args) {
+$app->get('/api/getdata', function (Request $request, Response $response, $args) {
     $db = MongoConnector::makeConnection();
     $res = $db->sites->find( [] );
 

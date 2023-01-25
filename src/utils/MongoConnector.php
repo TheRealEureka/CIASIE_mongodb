@@ -32,12 +32,20 @@ class MongoConnector
         if (!isset(self::$conf)) {
             throw new \Exception("No configuration file found");
         }
-        if (!isset($db)) {
+        if (!isset(self::$db)) {
            // $client = new \MongoDB\Client('mongodb://' . self::$conf['user'] . ':' . self::$conf['password'] . '@' . self::$conf['host'] . ':' . self::$conf['port']);
             $client = new \MongoDB\Client('mongodb://' . self::$conf['host'] . ':' . self::$conf['port']);
             self::$db = $client->selectDatabase(self::$conf['database']);
-
         }
+            if(!MongoConnector::isCollectionExist('sites')){
+                self::$db->createCollection('sites');
+                $col = self::$db->selectCollection('sites');
+                $col->insertMany(\App\Utils\Fetcher::fetchAll()['features']);
+            }
+            if(!MongoConnector::isCollectionExist('users')){
+                self::$db->createCollection('users');
+            }
+
         return self::$db;
     }
 
