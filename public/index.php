@@ -30,6 +30,17 @@ $app->get('/initdata', function (Request $request, Response $response, $args) {
     $response->getBody()->write($res);
     return $response;
 });
+$app->get('/deldata', function (Request $request, Response $response, $args) {
+    $db = MongoConnector::makeConnection();
+    $res = "Collection not exists";
+    if(MongoConnector::isCollectionExist('sites')){
+        $db->dropCollection('sites');
+        $res = "Collection deleted";
+    }
+    $response->getBody()->write($res);
+    return $response;
+});
+
 $app->get('/api/getData', function (Request $request, Response $response, $args) {
     $db = MongoConnector::makeConnection();
     $res = $db->sites->find( [] );
@@ -40,6 +51,22 @@ $app->get('/api/getData', function (Request $request, Response $response, $args)
 
 $app->get('/map', function (Request $request, Response $response, $args) {
     $response->getBody()->write(\App\view\ViewManager::getView("map.html"));
+    return $response;
+});
+$app->get('/login', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(\App\view\ViewManager::getView("login.php"));
+    return $response;
+});
+$app->post('/login', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(\App\view\ViewManager::getView("login.php"));
+    return $response;
+});
+$app->get('/register', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(\App\view\ViewManager::getView("register.php"));
+    return $response;
+});
+$app->post('/register', function (Request $request, Response $response, $args) {
+    $response->getBody()->write(\App\view\ViewManager::getView("register.php"));
     return $response;
 });
 

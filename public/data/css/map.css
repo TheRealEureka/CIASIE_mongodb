@@ -2,7 +2,9 @@ body {
   margin: 0;
   padding: 0;
 }
-
+.cible{
+  cursor: crosshair;
+}
 #map {
   z-index: 1;
   height: 100vh;
@@ -35,16 +37,12 @@ h1 {
 }
 
 div#panel-content.open {
-  width: 275px;
-  padding: 20px;
+  width: 300px;
 }
 
 #close {
-  position: absolute;
-  top: 0;
-  right: 25px;
   font-size: 36px;
-  margin-left: 50px;
+    cursor: pointer;
 }
 
 #menu {
@@ -59,12 +57,21 @@ div#panel-content.open {
   cursor: pointer;
   background-color: white;
   padding: 0;
+  border: 2px solid grey;
 }
-#menu img {
+.new-point{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+  margin: 10px;
+}
+#menu > i {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-size: 1.5em;
 }
 
 .hidden {
@@ -75,5 +82,23 @@ div#panel-content.open {
   top: calc(100vh - 100px);
   left: calc(100vw - 100px);
 }
+#panel-content-header-title{
+  font-weight: bold;
+  padding: 0;
+  border-bottom: grey 1px solid;
+  display: flex;
+    justify-content: space-around;
+    align-items: center;
+  flex-wrap: nowrap;
 
-/*# sourceMappingURL=map.css.map */
+}
+#panel-content-header-title > h1{
+  margin: 5px;
+
+}
+#panel-content-body{
+}
+
+button.accordion-button{
+border-radius: 0;
+}

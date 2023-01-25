@@ -1,6 +1,7 @@
 let panel = document.getElementById('panel');
 let panelContent = document.getElementById('panel-content');
 let menu = document.getElementById('menu');
+let close = document.getElementById('close');
 
 function togglePanel(){
   if(panel.classList.contains('hidden')) {
@@ -18,5 +19,9 @@ function togglePanel(){
 
   }
 }
+togglePanel();
 menu.addEventListener('click', togglePanel);
+close.addEventListener('click', togglePanel);
 panel.addEventListener('click', togglePanel);
+
+export default togglePanel;

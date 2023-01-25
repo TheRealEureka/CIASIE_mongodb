@@ -37,6 +37,7 @@ class Fetcher
                         )
                     ),
                     "properties" => array(
+                        "name" => $parking->attributes->NOM,
                         "label" => $label,
                         "category" => "parking",
                         "opts" => array()
@@ -65,6 +66,7 @@ class Fetcher
                         )
                     ),
                     "properties" => array(
+                        "name" => $velo->name,
                         "label" => $label,
                         "category" => "velo",
                         "opts" => array(
@@ -89,8 +91,10 @@ class Fetcher
 
                 if($transport->geometry->type !== "LineString"){
                     $options = array("icon"=>"markerround");
+                    $name = $transport->properties->name;
                     $label = "Arrêt " . $transport->properties->name . '<br><br> Code de l\'arrêt : ' . $transport->properties->code;
                 }else{
+                    $name = $transport->properties->route_short_name;
                     $label = "Ligne " . $transport->properties->route_short_name . '<br><br>' . $transport->properties->route_long_name;
                     $options = array("color" => $transport->properties->route_color);
                 }
@@ -98,6 +102,7 @@ class Fetcher
                     "type" => "Feature",
                     "geometry" => $transport->geometry,
                     "properties" => array(
+                        "name" => $name,
                         "label" => $label,
                         "category" => "transport",
                         "opts" => $options

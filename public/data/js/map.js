@@ -1,7 +1,9 @@
+import togglePanel from "./popup.js";
 let points = [];
+let addMode = false;
+const mapObject = document.getElementById('map');
 
-//Transferer les api call en php -> mongoDB
-//Ajouter les points sur la map via l'api
+
 
 const markergreen = L.icon({
     iconUrl: './data/icons/marker-green.png',
@@ -62,27 +64,28 @@ fetch('http://localhost:8080/api/getData'
         let opt = {}
         if(point.properties['opts']['icon'] === 'markergreen'){
             opt.pointToLayer= function (feature, latlng) {
-                    return L.marker(latlng, {icon: markergreen});
+                return L.marker(latlng, {icon: markergreen});
             }
         }else if(point.properties['opts']['icon'] === 'markerred'){
             opt.pointToLayer= function (feature, latlng) {
-                    return L.marker(latlng, {icon: markerred});
-                }
+                return L.marker(latlng, {icon: markerred});
+            }
 
         } else if(point.properties['opts']['icon'] === 'markerround'){
             opt.pointToLayer= function (feature, latlng) {
-                    return L.marker(latlng, {icon: markerround});
-                }
+                return L.marker(latlng, {icon: markerround});
+            }
         } else if(point.properties['opts']['icon'] === 'markerpurple'){
             opt.pointToLayer= function (feature, latlng) {
-                    return L.marker(latlng, {icon: markerpurple});
-                }
+                return L.marker(latlng, {icon: markerpurple});
+            }
         }
         if(point.properties['opts']['color']){
             opt.style = function (feature) {
                 return {color: feature.properties['opts']['color']}
             }
         }
+        points.push(point)
         let marker =  L.geoJSON(point, opt);
         marker.bindPopup(point.properties['label']);
 
@@ -104,18 +107,59 @@ fetch('http://localhost:8080/api/getData'
 
         }
     });
+    displayPointsList()
 });
-function onMapClick(e) {
-     let marker =L.marker([ e.latlng.lat, e.latlng.lng], {icon : markerpurple});
-     myPoints.addLayer(marker);
-    let label = prompt("Label");
-     if(label){
-      marker.bindPopup(label);
-    }
-    points.push(marker);
 
+function onMapClick(e) {
+    if(addMode) {
+        let marker = L.marker([e.latlng.lat, e.latlng.lng], {icon: markerpurple});
+        myPoints.addLayer(marker);
+        let label = prompt("Label");
+        if (label) {
+            marker.bindPopup(label);
+        }
+        points.push(marker);
+        addMode = false;
+    }
 }
 
+function displayPointsList(){
+   let pointsData = {
+       velos : points.filter(point => point.properties['category'] === 'velo'),
+       parkings : points.filter(point => point.properties['category'] === 'parking'),
+       transports : points.filter(point => {return point.properties['category'] === 'transport' && point.geometry['type'] === 'Point'}),
+       myPoints : points.filter(point => point.properties['category'] === 'myPoints'),
+   }
+   let veloList = document.getElementById('veloList');
+    let parkingList = document.getElementById('parkingList');
+    let transportList = document.getElementById('transportList');
+    let myPointsList = document.getElementById('myPointsList');
+    veloList.innerHTML = '';
+    parkingList.innerHTML = '';
+    transportList.innerHTML = '';
+    myPointsList.innerHTML = '';
+
+    veloList.append(pointsToHTML(pointsData.velos));
+    parkingList.append(pointsToHTML(pointsData.parkings));
+    transportList.append(pointsToHTML(pointsData.transports));
+    myPointsList.append(pointsToHTML(pointsData.myPoints))
+}
+function pointsToHTML(points){
+
+    let ul = document.createElement('ul');
+    ul.append(...points.map(pointToHTML))
+    return ul;
+}
+function pointToHTML(point){
+   let li = document.createElement('li');
+    li.classList.add('list-group-item');
+    li.innerHTML = point.properties['name'];
+    li.addEventListener('click', () => {
+        map.flyTo([point.geometry.coordinates[1], point.geometry.coordinates[0]], 15);
+        console.log(point);
+    });
+    return li;
+}
 
 
 let overlayMaps = {
@@ -128,6 +172,16 @@ let overlayMaps = {
 
 L.control.layers({}, overlayMaps).addTo(map);
 
-
+document.getElementById("newpoint").addEventListener("click", toggleAddMode);
+function toggleAddMode() {
+    addMode=!addMode;
+    togglePanel();
+    if(addMode)
+    {
+        mapObject.classList.add('cible');
+    }else{
+        mapObject.classList.remove('cible');
+    }
+}
 map.on('click', onMapClick);
 
