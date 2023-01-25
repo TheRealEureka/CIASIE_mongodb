@@ -14,11 +14,12 @@ class Raccoon
             'username' => $data['username'],
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'email' => $data['email'],
-            'sites' => array()
+            'sites' => []
         );
         $col->insertOne($user);
         return true;
     }
+
     public static function loginUser($data, &$message) : bool{
         if(!isset($data['username']) || !isset($data['password'])){
             $message = "Invalid data";
@@ -33,6 +34,46 @@ class Raccoon
             $message = "Invalid password";
             return false;
         }
+        return true;
+    }
+    public static function addPoint($data, &$message) : bool{
+        $db = MongoConnector::makeConnection();
+        if(!isset($data['username']) || !isset($data['point'])){
+            $message = "Invalid data";
+            return false;
+        }
+        $point = $data['point'];
+        try{
+            $point = json_decode($point, true);
+        } catch(\Exception $e){
+            $message = "Invalid data";
+            return false;
+        }
+        $col = $db->selectCollection('users');
+        $col->updateOne(
+            ['username' => $data['username']],
+            ['$push' => ['sites' => $point]]
+        );
+        return true;
+    }
+    public static function removePoint($data, &$message) : bool{
+        $db = MongoConnector::makeConnection();
+        if(!isset($data['username']) || !isset($data['point'])){
+            $message = "Invalid data";
+            return false;
+        }
+        $point = $data['point'];
+        try{
+            $point = json_decode($point, true);
+        } catch(\Exception $e){
+            $message = "Invalid data";
+            return false;
+        }
+        $col = $db->selectCollection('users');
+        $col->updateOne(
+            ['username' => $data['username']],
+            ['$pull' => ['sites' => $point]]
+        );
         return true;
     }
 
