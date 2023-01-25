@@ -43,12 +43,7 @@ class Raccoon
             return false;
         }
         $point = $data['point'];
-        try{
-            $point = json_decode($point, true);
-        } catch(\Exception $e){
-            $message = "Des données sont manquantes";
-            return false;
-        }
+
         $col = $db->selectCollection('users');
         $col->updateOne(
             ['username' => $data['username']],
@@ -67,12 +62,7 @@ class Raccoon
             return false;
         }
         $point = $data['point'];
-        try{
-            $point = json_decode($point, true);
-        } catch(\Exception $e){
-            $message = "Des données sont manquantes";
-            return false;
-        }
+
         $col = $db->selectCollection('users');
         $col->updateOne(
             ['username' => $data['username']],

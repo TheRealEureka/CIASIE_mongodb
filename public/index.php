@@ -31,8 +31,16 @@ $app->get('/', function (Request $request, Response $response, $args) {
 $app->get('/api/getdata', function (Request $request, Response $response, $args) {
     $db = MongoConnector::makeConnection();
     $res = $db->sites->find( [] );
-
-    $response->getBody()->write(json_encode($res->toArray(),true));
+    $points = [];
+    if(isset($_SESSION['username'])){
+        $username = $_SESSION['username'];
+        $collection = $db->selectCollection('users');
+        $user = $collection->findOne(['username' => $username]);
+        if($user){
+            $points = (array) $user['sites'];
+        }
+    }
+    $response->getBody()->write(json_encode(array_merge($res->toArray(), $points),true));
     return $response;
 });
 
@@ -84,11 +92,22 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     return $response;
 });
 $app->post('/addPoint', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(Raccoon::getPost(),true));
+    $post = Raccoon::getPost();
+    $msg = "";
+    if(isset($_SESSION['username'])){
+        $post['username'] = $_SESSION['username'];
+        Raccoon::addPoint($post, $msg);
+    }
+    $response->getBody()->write($msg);
     return $response;
 });
 $app->post('/removePoint', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(Raccoon::getPost(),true));
+    $post = Raccoon::getPost();
+    if(isset($_SESSION['username'])){
+        $post['username'] = $_SESSION['username'];
+        Raccoon::removePoint($post, $msg);
+    }
+    $response->getBody()->write(json_encode("{}",true));
     return $response;
 });
 

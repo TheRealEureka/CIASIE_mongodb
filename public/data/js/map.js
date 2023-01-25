@@ -168,19 +168,19 @@ function displayPointsList(){
     veloList.append(...pointsToHTML(pointsData.velos));
     parkingList.append(...pointsToHTML(pointsData.parkings));
     transportList.append(...pointsToHTML(pointsData.transports));
-    myPointsList.append(...pointsToHTML(pointsData.myPoints))
+    myPointsList.append(...pointsToHTML(pointsData.myPoints, true))
 }
-function pointsToHTML(points){
-    return points.map(pointToHTML);
+function pointsToHTML(points, canDelete = false){
+    return points.map((p) => pointToHTML(p,canDelete));
 }
-function pointToHTML(point, canDelete = false){
+function pointToHTML(point,  canDelete = false){
    let li = document.createElement('li');
     li.classList.add('list-group-item');
     li.innerHTML = point.properties['name'];
     li.addEventListener('click', () => {
         map.flyTo([point.geometry.coordinates[1], point.geometry.coordinates[0]], 15);
     });
-    if(canDelete){
+    if(canDelete === true){
         let deleteButton = document.createElement('button');
         deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
         deleteButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
@@ -208,12 +208,12 @@ fetch(url, {
     },
     body: JSON.stringify({'point' : point})
 })
-    .then(response => response.json())
+    .then(response => response.text())
     .then(data => {
-        console.log("success");
+        console.log("success"+data);
     })
     .catch((error) => {
-        console.error('Error:', error);
+        console.error(error);
     });
 }
 
