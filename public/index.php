@@ -4,6 +4,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 session_start();
 
+use App\Utils\Fetcher;
 use App\Utils\MongoConnector;
 use App\Utils\Raccoon;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -85,7 +86,7 @@ $app->post('/register', function (Request $request, Response $response, $args) {
     if($register){
         $msg = "<span style='color:green'>Vous avez bien été inscrit. Veuillez vous connecter.</span>";
     }
-    $response->getBody()->write(\App\view\ViewManager::getView("register.html", array("ERROR" => $msg)));
+    $response->getBody()->write(\App\view\ViewManager::getView("register.html", array("ERROR" => $msg, "username" => $_POST['username'] ?? "", "email" => $_POST['email']??"")));
     return $response;
 });
 $app->post('/addPoint', function (Request $request, Response $response, $args) {
