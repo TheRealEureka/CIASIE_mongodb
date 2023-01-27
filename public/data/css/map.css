@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background: url("../imgs/background.png") ;
 }
 .cible{
   cursor: crosshair;
@@ -8,6 +9,7 @@ body {
 #map {
   z-index: 1;
   height: 100vh;
+margin: 0 115px;
 }
 
 #panel {
@@ -81,10 +83,7 @@ div#panel-content.open {
   display: none;
 }
 
-.leaflet-top.leaflet-left {
-  top: calc(100vh - 100px);
-  left: calc(100vw - 100px);
-}
+
 #panel-content-header-title{
   font-weight: bold;
   padding: 0;
@@ -116,4 +115,24 @@ border-radius: 0;
 }
 .list-group-item:hover{
   background-color: #f8f9fa;
+}
+.left-hand, .right-hand{
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  z-index: 7;
+
+
+
+}
+.left-hand {
+  bottom: -10%;
+  left: -7%;
+  background: no-repeat  center/105% url('../imgs/left-hand.png') ;
+}
+.right-hand{
+  bottom: -10%;
+  right: -7%;
+  background: no-repeat center/105% url('../imgs/right-hand.png') ;
+
 }
