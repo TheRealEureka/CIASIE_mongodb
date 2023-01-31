@@ -19,7 +19,7 @@ docker-compose up --build
 ### 3. Install the dependencies
 ```bash
 docker exec -it <ContainerName> /bin/bash
-composer install
+composer install -d ../
 ```
 ### 4. Open the website (default port : 8080)
 ```bash
