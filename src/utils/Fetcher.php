@@ -14,7 +14,7 @@ class Fetcher
     $parkings = self::fetchParkings();
     $velos = self::fetchVelos();
     $transports = self::fetchTransports();
-    return array("type"=> "FeatureCollection", "features" => array_merge($parkings, $velos, $transports, $univ));
+    return array("type"=> "FeatureCollection", "features" => array_merge($parkings, $velos, $transports));
   }
   private static function fetchParkings(): array
   {
